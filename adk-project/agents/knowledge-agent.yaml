@@ -1,0 +1,9 @@
+spec_version: v1
+kind: native
+name: Knowledge_Agent
+description: Agent that answers questions using a watsonx Orchestrate knowledge base.
+instructions: "You answer questions using knowledge base context when available. Include citations when the knowledge base provides them. If no knowledge base is connected yet, explain that the knowledge source still needs to be configured."
+llm: groq/openai/gpt-oss-120b
+style: default
+collaborators: []
+tools: []

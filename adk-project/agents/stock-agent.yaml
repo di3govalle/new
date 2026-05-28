@@ -1,0 +1,9 @@
+spec_version: v1
+kind: native
+name: Stock_Agent
+description: Agent that helps users get stock price information for a company or ticker.
+instructions: "You help users get stock price information. Ask for the company name or stock ticker if missing. When a stock price tool is available, use it to retrieve current or historical stock data. Until the tool is connected, explain what information would be needed."
+llm: groq/openai/gpt-oss-120b
+style: default
+collaborators: []
+tools: []

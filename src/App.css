@@ -1,0 +1,287 @@
+/* App.css
+   IBM / watsonx-inspired dark technical dashboard. Plain CSS, no frameworks. */
+
+:root {
+  --bg: #0a0e17;
+  --panel: #131927;
+  --panel-2: #1b2335;
+  --border: #283147;
+  --text: #e7ecf3;
+  --text-dim: #9aa6b8;
+  --accent: #4589ff; /* IBM blue */
+  --accent-hover: #6ea2ff;
+  --ok: #42be65;
+  --warn: #fa4d56;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Code", Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+/* ---- Header ---- */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.app-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.app-title h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.app-subtitle {
+  color: var(--text-dim);
+  font-size: 14px;
+  font-family: var(--mono);
+}
+
+/* ---- Status badge ---- */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-mock {
+  background: rgba(250, 77, 86, 0.08);
+  color: #ff8389;
+}
+.status-mock .status-dot {
+  background: var(--warn);
+}
+
+.status-live {
+  background: rgba(66, 190, 101, 0.08);
+  color: #6fdc8c;
+}
+.status-live .status-dot {
+  background: var(--ok);
+}
+
+/* ---- Cards grid ---- */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.agent-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.agent-card-header h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.agent-card-subtitle {
+  margin: 0 0 16px;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+/* ---- Form ---- */
+
+.agent-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.agent-card-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.agent-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.agent-card input,
+.agent-card textarea {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.agent-card input:focus,
+.agent-card textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(69, 137, 255, 0.2);
+}
+
+.agent-card-button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.agent-card-button:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.agent-card-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---- Response box (terminal style) ---- */
+
+.response-box {
+  margin-top: 16px;
+  background: #060912;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  min-height: 96px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.response-placeholder {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.response-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-dim);
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.response-error strong {
+  color: var(--warn);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.response-error pre,
+.response-text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+}
+
+.response-error pre {
+  color: #ff8389;
+}
+
+/* ---- Citations ---- */
+
+.citations {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+.citations-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.citations ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.citations-empty {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ---- Footer ---- */
+
+.app-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 13px;
+  text-align: center;
+}
