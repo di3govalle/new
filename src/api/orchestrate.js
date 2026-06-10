@@ -63,6 +63,18 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Flatten a content field that may be a plain string or an array of blocks.
+function contentToText(content) {
+  if (typeof content === "string") return content;
+  if (Array.isArray(content)) {
+    return content
+      .map((block) => block.text || block.content || "")
+      .filter(Boolean)
+      .join("\n\n");
+  }
+  return "";
+}
+
 // Try hard to pull a human-readable answer out of whatever the API returns.
 // The /runs response shape can vary, so we check the common locations and
 // fall back to the raw JSON if nothing obvious is found.
@@ -72,29 +84,43 @@ function extractAnswer(data) {
   }
 
   let text = "";
+  let citations = [];
 
-  // Common shapes seen from the /runs GET response.
-  if (typeof data.result?.message?.content === "string") {
-    text = data.result.message.content;
-  } else if (typeof data.message?.content === "string") {
-    text = data.message.content;
-  } else if (typeof data.output?.content === "string") {
+  // PRIMARY: SaaS shape — result.data.message.content (array of {text} blocks)
+  const saasMessage = data.result?.data?.message;
+  if (saasMessage) {
+    text = contentToText(saasMessage.content);
+    citations = saasMessage.citations || [];
+  }
+
+  // FALLBACKS for other deployment shapes.
+  if (!text) {
+    const c1 = data.result?.message?.content;
+    if (c1) text = contentToText(c1);
+  }
+  if (!text) {
+    const c2 = data.message?.content;
+    if (c2) text = contentToText(c2);
+  }
+  if (!text && typeof data.output?.content === "string") {
     text = data.output.content;
-  } else if (Array.isArray(data.messages) && data.messages.length > 0) {
+  }
+  if (!text && Array.isArray(data.messages) && data.messages.length > 0) {
     const last = data.messages[data.messages.length - 1];
-    if (typeof last?.content === "string") {
-      text = last.content;
-    }
-  } else if (typeof data.content === "string") {
+    if (last?.content) text = contentToText(last.content);
+  }
+  if (!text && typeof data.content === "string") {
     text = data.content;
   }
 
-  // Citations from a knowledge base, if present.
-  const citations =
-    data.result?.citations ||
-    data.citations ||
-    data.message?.citations ||
-    [];
+  // Citations fallback.
+  if (!citations.length) {
+    citations =
+      data.result?.citations ||
+      data.citations ||
+      data.message?.citations ||
+      [];
+  }
 
   return {
     text: text.trim(),
